@@ -2,3 +2,12 @@ Developer
 Tester
 Designer
 Support
+
+--------------------
+
+Changes are made after the file is uploaded on remote server.
+
+Now slave is going to make new changes.
+
+Business Analyst
+Project Manager
