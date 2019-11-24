@@ -2,8 +2,11 @@ package com.ExpenseApp.Project.Controller;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.validation.Valid;
+import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ExpenseApp.Project.CustomExcpetion.RecordNotFoundException;
+import com.ExpenseApp.Project.CustomException.UserNotFoundException;
 import com.ExpenseApp.Project.Service.IUserService;
 import com.ExpenseApp.Project.pojo.User;
 
@@ -25,40 +28,59 @@ public class UserController
 	@Autowired
 	private IUserService userService;
 	
+	/**
+	 * Method used for user registration
+	 * @param user details (user object)
+	 * @return status string
+	 */
 	@PostMapping("/register")
 	public ResponseEntity<String> registerUser(@RequestBody User user)
 	{
+		try 
+		{		
 		if(user.getPassword().equals(user.getConfirmPassword()))
 		{
 			return new ResponseEntity<String>(userService.registerUser(user),HttpStatus.OK);
 		}
-		else
+		return new ResponseEntity<String>("password dosen't match",HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		catch(Exception e)
 		{
-			return new ResponseEntity<String>("password dosen't match",HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<String>("Registeration failed", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
+	/**
+	 * Method used for login user
+	 * @param String emailId and password
+	 * @return User Details (Entire Object)
+	 */
 	@GetMapping("/loginuser")
-	public ResponseEntity<User> loginUser(@Valid @RequestBody User user)
+	public User loginUser(@RequestBody User user)
 	{
 		String email=user.getEmail();
-		String Password=user.getPassword();
-		
-		User userDetails=userService.loginUser(email,Password);
-		
-		if(userDetails==null)
+		String password=user.getPassword();
+		try
 		{
-			throw new RecordNotFoundException("Invalid mailId or password");
+		User userData=userService.loginUser(email,password);
+		return userData;
 		}
-		
-		return new ResponseEntity<User>(userService.loginUser(email,Password),HttpStatus.OK);
+		catch(Exception e)
+		{
+			throw new UserNotFoundException("");
+		}
 	}
+	
+	/**
+	 * Method used to get registered users list
+	 * @param No any parameter provided
+	 * @return List of registered Users
+	 */
 	
 	@GetMapping("/usersList")
-	public List<User> getUsersList()
+	public List<User> usersList()
 	{
-		return userService.getUsersList();
+		return userService.usersList();
 	}
 	
-
 }

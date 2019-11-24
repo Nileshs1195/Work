@@ -11,10 +11,9 @@ public interface IUserDao
 
 	String registerUser(User user);
 
-
 	User loginUser(String email, String password);
 
+	List<User> usersList();
 
-	List<User> getUsersList();
 
 }
