@@ -1,10 +1,10 @@
 package com.ExpenseApp.Project.pojo;
 
 import java.util.*;
-
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
-import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -16,19 +16,24 @@ public class User
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userid;
 	
-//	@javax.validation.constraints.NotEmpty(message="Username must not be empty")
+	@NotEmpty(message="username can't be empty")
 	private String username;
-
-	//@javax.validation.constraints.NotEmpty(message="email must not be empty")
-	private String email;
-
-//	@javax.validation.constraints.NotEmpty(message="password must not be empty")
-	private String password;
 	
-	//@javax.validation.constraints.NotEmpty(message="confirmPassword must not be empty")
+	@Email
+	@NotEmpty(message="username can't be empty")
+	private String email;
+	
+	@NotEmpty(message="Password can't be empty")
+	private String password;
+
+	@NotEmpty(message="Password can't be empty")
 	private String confirmPassword;
 	
-						/* OneToMany Mapping from one User to multiple Expenses */
+						
+	/**
+	 * @OneToMany
+	 * Mapping from one User to multiple Expenses
+	 */
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	//@JsonIgnore
